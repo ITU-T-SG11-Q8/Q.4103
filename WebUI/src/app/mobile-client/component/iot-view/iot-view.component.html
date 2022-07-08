@@ -1,0 +1,93 @@
+<!--
+    The MIT License
+
+    Copyright (c) 2022 ETRI
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+    to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+    and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<div class="host-background" fxFlexFill fxLayout="column" (resized)="onResized($event)" style="position: relative;">
+    <app-header headerTitle="HP2P Client" isClient="false" [isPortraitMode]="isPortraitMode" [isMobile]="isMobile">
+    </app-header>
+
+    <div [fxFlex]="mainViewFxFlex" fxLayout="row" fxLayoutAlign="center center" style="padding: 5px;">
+        <div style="width: 100%; height: 92%;">
+            <plotly-plot #plotly [data]="linePlot.data" [layout]="linePlot.layout" [config]="linePlot.config"
+                [useResizeHandler]="true" [style]="{position: 'relative', width: '100%', height: '100%'}">
+            </plotly-plot>
+        </div>
+    </div>
+
+    <div *ngIf="isShowSubView" [fxFlex]="subViewFxFlex" fxLayout="column" fxLayoutAlign="start center">
+        <div fxLayout="row" style="margin-bottom: 10px; width: 360px;" fxLayoutAlign="center center">
+            <dx-radio-group style="margin-right: 10px;" [items]="typesOption" [(value)]="selectedTypesOption"
+                layout="horizontal" (onValueChanged)="onTypesOptionChanged()">
+            </dx-radio-group>
+
+            <dx-select-box [items]="selectorItems" [(value)]="selectedSelectorItems" style="width: 130px;"
+                (onValueChanged)="onSelectorItemsChanged()">
+            </dx-select-box>
+        </div>
+
+        <div *ngIf="isSelectedPeerTypesOption" style="width: 350px;">
+            <div class="dx-fieldset">
+                <div class="dx-field">
+                    <div class="dx-field-label">Temperature</div>
+                    <div class="dx-field-value">
+                        <dx-switch [(value)]="showTemperature" style="width: 100px;"
+                            (onValueChanged)="onDataTypeShowValueChanged(0)"></dx-switch>
+                    </div>
+                </div>
+                <div class="dx-field">
+                    <div class="dx-field-label">Humidity</div>
+                    <div class="dx-field-value">
+                        <dx-switch [(value)]="showHumidity" style="width: 100px;"
+                            (onValueChanged)="onDataTypeShowValueChanged(1)"></dx-switch>
+                    </div>
+                </div>
+                <div class="dx-field">
+                    <div class="dx-field-label">Microdust</div>
+                    <div class="dx-field-value">
+                        <dx-switch [(value)]="showMicrodust" style="width: 100px;"
+                            (onValueChanged)="onDataTypeShowValueChanged(2)"></dx-switch>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <dx-list *ngIf="isSelectedDataTypesOption" [height]="listHeight" [width]="listWidth" [dataSource]="peerList"
+            itemTemplate="rowTemplate">
+            <div *dxTemplate="let peer of 'rowTemplate'">
+                <div fxFlex fxLayout="row" style="height: 50px;">
+                    <div fxFlex="40" fxLayoutAlign="start center">{{peer.id}}</div>
+                    <div fxFlex="60" fxLayoutAlign="end center">
+                        <dx-switch [(value)]="peer.show" style="width: 100px;"
+                            (onValueChanged)="onPeerShowValueChanged(peer.index)">
+                        </dx-switch>
+                    </div>
+                </div>
+            </div>
+        </dx-list>
+        <!-- <div *ngIf="!isSelectedPeerTypesOption" style="width: 500px; overflow-x: auto;"
+            [style.height.px]="peerListHeight">
+            <div class="dx-fieldset">
+                <div class="dx-field" *ngFor="let peer of peerList; index as index" style="margin-bottom: 30px;">
+                    <div class="dx-field-label">{{peer.id}}</div>
+                    <div class="dx-field-value">
+                        <dx-switch [(value)]="peer.show" style="width: 130px;"
+                            (onValueChanged)="onPeerShowValueChanged(index)">
+                        </dx-switch>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    </div>
+</div>

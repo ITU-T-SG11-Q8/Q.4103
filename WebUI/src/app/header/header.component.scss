@@ -1,0 +1,39 @@
+@import "src/styles";
+
+:host {
+    height: 50px;
+
+    .content {
+        padding: 10px;
+        position: absolute;
+        display: flex;
+    }
+
+    .content>img {
+        height: 30px;
+    }
+
+    .title {
+        color: $default-color;
+        font-size: 30px;
+        font-weight: bold;
+        margin-left: 50px;
+        margin-top: 3px;
+    }
+
+    .client-title {
+        color: $default-color;
+        font-size: 25px;
+        font-weight: bold;
+        line-height: 1;
+        margin-left: 20px;
+    }
+}
+
+::ng-deep .button-ex .dx-button-mode-contained .dx-icon {
+    color: white !important;
+}
+
+::ng-deep .button-ex .dx-button-mode-contained {
+    color: white !important;
+}
