@@ -1,0 +1,5 @@
+#!/bin/bash
+
+docker rmi homs2020:1.1
+
+docker build -f Dockerfile --tag homs2020:1.1 .

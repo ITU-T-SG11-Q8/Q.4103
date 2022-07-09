@@ -1,0 +1,17 @@
+@import "src/styles";
+
+:host {
+    height: 32px;
+
+    .content {
+        color: $default-color;
+        margin: 5px 0px;
+        font-size: 14px;
+        text-align: center;
+
+        .copyright {
+            display: inline;
+            font-weight: bold;
+        }
+    }
+}

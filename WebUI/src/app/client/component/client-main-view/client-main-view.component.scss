@@ -1,0 +1,102 @@
+.host-background {
+    background-image: url("src/assets/images/background/9.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    // background-image: -webkit-radial-gradient(10% 0, farthest-side ellipse, #414e60 20%, #94a3b1);
+}
+
+::ng-deep .info-container {
+    margin: 10px 10px 0px 10px;
+    border: solid 1px white;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+::ng-deep .log-container {
+    margin: 10px;
+    padding: 35px 20px 20px 20px;
+    border: solid 1px white;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+::ng-deep .d3-container {
+    margin: 10px 0px 10px 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: solid 1px white;
+    padding: 20px;
+}
+
+::ng-deep .d3-container-Portrait {
+    margin: 10px 10px 0px 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: solid 1px white;
+    padding: 20px;
+}
+
+::ng-deep .overlay-list {
+    margin: 20px;
+    height: auto;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+::ng-deep .overlay {
+    height: 40px;
+}
+
+::ng-deep .overlay>div {
+    line-height: 40px;
+    font-size: 15px;
+    overflow: hidden;
+}
+
+::ng-deep .overlay>div.title {
+    font-weight: bold;
+}
+
+::ng-deep .d3-editor {
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    width: auto;
+    height: auto;
+    padding: 5px;
+}
+
+::ng-deep .d3-editor-show {
+    border: solid 1px white;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.div-show {
+    // height: 360px; 
+    height: 320px;
+    width: 400px;
+    display: flex;
+}
+
+.div-hide {
+    height: 0px;
+    width: 0px;
+    display: none;
+}
+
+
+.div-title {
+    position: absolute;
+    top: -25px;
+    color: #dedede;
+    font-size: 14px;
+}
+
+.div-title-log {
+    position: absolute;
+    top: 10px;
+    color: #dedede;
+    font-size: 14px;
+}
+
+::ng-deep .dx-button-danger-ex {
+    background-color: #1ca8dd !important;
+    color: #2a2a2a !important;
+    opacity: 1 !important;
+}

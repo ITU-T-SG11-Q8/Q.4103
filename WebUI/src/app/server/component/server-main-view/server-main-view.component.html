@@ -1,0 +1,113 @@
+<!--
+    The MIT License
+
+    Copyright (c) 2022 ETRI
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+    to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+    and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<div class="host-background" fxLayout="column" fxFlexFill>
+    <app-header [headerTitle]="headerTitle" [isClient]="isClient"></app-header>
+
+    <div fxLayout="row" fxFlex style="position: relative;">
+        <div fxLayout="column" class="d3-editor" [ngClass]="{'d3-editor-show': isShowD3Eidtor}">
+            <div>
+                <dx-button icon="edit" style="float: right;" (onClick)="onD3EditorClick()">
+                </dx-button>
+            </div>
+
+            <div [ngClass]="{'div-show': isShowD3Eidtor, 'div-hide': !isShowD3Eidtor}">
+                <div class="form">
+                    <div class="dx-fieldset">
+                        <div class="dx-field">
+                            <div class="dx-field-label">Show PeerId</div>
+                            <div class="dx-field-value">
+                                <dx-switch [(value)]="showPeerId" style="width: 100px;"></dx-switch>
+                            </div>
+                        </div>
+                        <div class="dx-field">
+                            <div class="dx-field-label">Node Auto Color</div>
+                            <div class="dx-field-value">
+                                <dx-switch [(value)]="autoNodeColor" style="width: 100px;"></dx-switch>
+                            </div>
+                        </div>
+                        <div class="dx-field">
+                            <div class="dx-field-label">Node Color</div>
+                            <div class="dx-field-value">
+                                <dx-color-box [(value)]="nodeColor" [disabled]="autoNodeColor"></dx-color-box>
+                            </div>
+                        </div>
+                        <div class="dx-field">
+                            <div class="dx-field-label">Primary Link Color</div>
+                            <div class="dx-field-value">
+                                <dx-color-box [(value)]="primaryLinkColor"></dx-color-box>
+                            </div>
+                        </div>
+                        <div class="dx-field">
+                            <div class="dx-field-label">Candidate Link Color</div>
+                            <div class="dx-field-value">
+                                <dx-color-box [(value)]="candidateLinkColor"></dx-color-box>
+                            </div>
+                        </div>
+                        <div class="dx-field">
+                            <div class="dx-field-label">Link Distance</div>
+                            <div class="dx-field-value">
+                                <dx-text-box [(value)]="linkDistance"></dx-text-box>
+                            </div>
+                        </div>
+                        <div>
+                            <dx-button icon="check" text="Apply" style="float: right;" (onClick)="onSetD3ColorClick()">
+                            </dx-button>
+                            <dx-button icon="redo" text="Reset" style="float: right; margin-right: 10px;"
+                                (onClick)="onResetD3EditorClick()">
+                            </dx-button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div fxFlex="30" fxLayout="column">
+            <div fxFlex="60" class="list-container">
+                <div style="margin: 10px;height: 25px;">
+                    <dx-button icon="pulldown" style="float: right;" (onClick)="onReloadOverlayClick()">
+                    </dx-button>
+                </div>
+                <dx-list [items]="overlayList" class="overlay-list" (onItemClick)="onOverlayItemClick($event)">
+                    <div *dxTemplate="let item of 'item'">
+                        <div class="overlay" fxLayout="row">
+                            <div class="title" fxFlex="60" fxLayoutAlign="center center">
+                                {{item.title}}
+                            </div>
+                            <div fxFlex="30" fxLayoutAlign="center center">
+                                {{item["owner-id"]}}
+                            </div>
+                            <div fxFlex="10" fxLayoutAlign="center center">
+                                <dx-button icon="close" (onClick)="onRemoveOverlayClick(item)">
+                                </dx-button>
+                            </div>
+                        </div>
+                    </div>
+                </dx-list>
+            </div>
+            <div fxFlex="40" class="log-container">
+                <dx-text-area fxFlexFill readOnly="false" [(value)]="log_message">
+                </dx-text-area>
+            </div>
+        </div>
+
+        <div fxFlex fxLayoutAlign="center center" class="d3-container">
+            <div fxFlexFill id="forceDirected"></div>
+        </div>
+    </div>
+
+    <app-footer></app-footer>
+</div>

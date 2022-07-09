@@ -1,0 +1,94 @@
+::ng-deep .chat-container {
+    margin: 10px 10px 10px 10px;
+    border: solid 1px white;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+::ng-deep .media-container {
+    margin: 10px 0px 10px 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: solid 1px white;
+    // padding: 20px;
+}
+
+::ng-deep .media-container-Portrait {
+    margin: 10px 10px 0px 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: solid 1px white;
+    // padding: 20px;
+}
+
+::ng-deep .chat-text-area {
+    background: #2a2a2a;
+    border: 1px solid #4d4d4d;
+    border-radius: 4px;
+    margin: 20px 20px 0px 20px;
+    // height: calc(100% - 100px);
+    padding: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+::ng-deep .video-player {
+    width: 100%;
+    //height: calc(100%-50px);
+}
+
+::ng-deep .received-data-row {
+    float: left;
+}
+
+::ng-deep .received-data-row-source {
+    color: white;
+    padding: 0px 0px 5px 5px;
+    font-weight: bold;
+}
+
+::ng-deep .received-data-row-message {
+    color: black;
+    background: white;
+    border-radius: 8px;
+    padding: 3px 15px;
+}
+
+::ng-deep .received-data-time {
+    color: lightgray;
+    font-size: small;
+    margin-left: 10px;
+}
+
+::ng-deep .send-data-row {
+    float: right;
+}
+
+::ng-deep .send-data-row-message {
+    color: black;
+    float: right;
+    background: yellow;
+    border-radius: 8px;
+    padding: 3px 15px;
+}
+
+::ng-deep .send-data-time {
+    color: lightgray;
+    font-size: small;
+    text-align: right;
+    margin-right: 10px;
+}
+
+::ng-deep .dx-button-play-ex {
+    background-color: #d9534f !important;
+    color: #2a2a2a !important;
+    opacity: 1 !important;
+}
+
+
+::ng-deep .video-play-button {
+    transform: scale(1.5);
+}
+
+@media (min-width: 1200px) {
+    .video-play-button {
+        transform: scale(3);
+    }
+}

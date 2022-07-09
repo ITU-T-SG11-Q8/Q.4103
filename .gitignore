@@ -1,2 +1,8 @@
-**/__pycache__/
-*.swp
+
+ws/ws
+.vscode/launch.json
+.DS_Store
+log.txt
+__pycache__/
+HOMS/HompServer/venv
+packages/

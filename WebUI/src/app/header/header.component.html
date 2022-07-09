@@ -1,0 +1,55 @@
+<!--
+    The MIT License
+
+    Copyright (c) 2022 ETRI
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+    to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+    and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<div *ngIf="!isClient" fxLayout="row" fxFlexFill class="container">
+  <div class="content">
+    <img src="../assets/images/etri.png" />
+  </div>
+  <div fxFlex fxLayoutAlign="center center">
+    <div class="title">{{headerTitle}}</div>
+  </div>
+</div>
+
+<div *ngIf="isClient" fxLayout="row" fxFlexFill class="container">
+  <div class="content">
+    <img src="../assets/images/etri.png" />
+    <div *ngIf="!isPortraitMode && !isMobile" class="client-title">{{headerTitle}}</div>
+  </div>
+  <div fxFlex fxLayoutAlign="end center" class="button-ex" style="padding: 10px;">
+    <!-- icon="columnchooser" -->
+    <dx-button [text]="!isPortraitMode ? 'Main':''" icon="home" [type]="selectedPath==paths[0] ? 'danger':'default'"
+      [stylingMode]="selectedPath==paths[0] ? 'contained':'outlined'" [routerLink]="paths[0]"
+      style="margin-right: 5px;">
+    </dx-button>
+    <dx-button [text]="!isPortraitMode ? 'Iot':''" icon="chart" [type]="selectedPath==paths[1] ? 'danger':'default'"
+      [stylingMode]="selectedPath==paths[1] ? 'contained':'outlined'" [routerLink]="paths[1]"
+      style="margin-right: 5px;">
+    </dx-button>
+    <dx-button [text]="!isPortraitMode ? 'Network':''" icon="share" [type]="selectedPath==paths[2] ? 'danger':'default'"
+      [stylingMode]="selectedPath==paths[2] ? 'contained':'outlined'" [routerLink]="paths[2]"
+      style="margin-right: 5px;">
+    </dx-button>
+    <!-- <dx-button [text]="!isPortraitMode ? 'Streaming':''" [icon]="isOwner ? 'photo':'video'"
+      [type]="selectedPath==paths[3] ? 'danger':'default'"
+      [stylingMode]="selectedPath==paths[3] ? 'contained':'outlined'" [routerLink]="paths[3]"
+      style="margin-right: 5px;">
+    </dx-button> -->
+    <dx-button [text]="!isPortraitMode ? 'Media':''" icon="video" [type]="selectedPath==paths[3] ? 'danger':'default'"
+      [stylingMode]="selectedPath==paths[3] ? 'contained':'outlined'" [routerLink]="paths[3]"
+      style="margin-right: 5px;">
+    </dx-button>
+  </div>
+</div>

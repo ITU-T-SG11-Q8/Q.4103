@@ -1,0 +1,85 @@
+<!--
+    The MIT License
+
+    Copyright (c) 2022 ETRI
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), 
+    to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, 
+    and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+    WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+-->
+
+<div fxFlexFill fxLayout="column" (resized)="onResized($event)">
+    <app-header headerTitle="HP2P Client" isClient="false" [isPortraitMode]="isPortraitMode" [isOwner]="isOwner"
+        [isMobile]="isMobile">
+    </app-header>
+
+    <div [fxLayout]="currentFxLayout" fxFlex style="position: relative;">
+        <div fxFlex fxLayoutAlign="center center"
+            [ngClass]="{'media-container': !isPortraitMode, 'media-container-Portrait': isPortraitMode}">
+            <div fxFlexFill fxLayout="column">
+                <!-- <div fxLayoutAlign="start center" style="margin-bottom: 10px;">
+                    <dx-button text="" [type]="isConnected ? 'danger':'success'" [icon]="isOwner ? 'photo':'video'"
+                        [stylingMode]="isConnected ? 'contained':'outlined'" (onClick)="onBroadcastClick()"
+                        [disabled]="isConnected" [ngClass]="{'dx-button-play-ex': isConnected}">
+                    </dx-button>
+                </div> -->
+                <div fxFlex [fxLayoutAlign]="isConnected ? 'center stretch': 'center center'">
+                    <div *ngIf="!isConnected">
+                        <dx-button text="" type="success" [icon]="isOwner ? 'photo':'video'" stylingMode="outlined"
+                            (onClick)="onBroadcastClick()" class="video-play-button">
+                        </dx-button>
+                    </div>
+                    <div *ngIf="isConnected">
+                        <video id="videoPlayer" autoplay playsinline controls="true" class="video-player"
+                            [style.height]="videoPlayerHeight"></video>
+                        <br />
+                        <!-- <audio id="audioPlayer" autoplay="true"></audio> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div [fxFlex]="subFxFlex" fxLayout="column">
+            <div class="chat-container" fxFlex>
+                <div #chatTextArea class="chat-text-area" fxLayout="column-reverse" fxLayoutGap="10px"
+                    [style.height]="textAreaHeight">
+                    <div *ngFor="let chat of chatDataList; index as index">
+                        <div *ngIf="chat.isReceived" class="received-data-row">
+                            <div class="received-data-row-source">
+                                {{chat.source}}
+                            </div>
+                            <div class="received-data-row-message">
+                                {{chat.message}}
+                            </div>
+                            <div class="received-data-time">
+                                {{chat.time}}
+                            </div>
+                        </div>
+                        <div *ngIf="!chat.isReceived" class="send-data-row">
+                            <div class="send-data-row-message">
+                                {{chat.message}}
+                            </div>
+                            <div class="send-data-time">
+                                {{chat.time}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div style="display: flex; margin: 20px;">
+                    <dx-text-box [(value)]="sendData" style="margin-right: 10px; width: calc(100% - 115px);"
+                        (onEnterKey)="onSendDataEnterKey()">
+                    </dx-text-box>
+                    <dx-button text="Send Data" type="success" stylingMode="outlined" (onClick)="onSendDataClick()"
+                        [disabled]="!hasConnection">
+                    </dx-button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

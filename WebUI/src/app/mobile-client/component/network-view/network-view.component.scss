@@ -1,0 +1,25 @@
+.host-background {
+    background-image: url("src/assets/images/background/9.jpg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    // background-image: -webkit-radial-gradient(10% 0, farthest-side ellipse, #414e60 20%, #94a3b1);
+}
+
+::ng-deep #accordion h1 {
+    font-size: 16px;
+}
+
+::ng-deep .dx-list-group-header {
+    background: #2a2a2a88;
+    padding: 10px 10px 10px 10px;
+}
+
+::ng-deep .dx-list-item-content {
+    padding: 5px 5px;
+}
+
+::ng-deep .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused {
+    background-color: transparent;
+    color: white;
+}

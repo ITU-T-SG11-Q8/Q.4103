@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+html,
+body {
+    width: 100%;
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+
+    background-image: url("src/assets/images/background/9.jpg");
+    // background-position: center;
+    // background-repeat: no-repeat;
+    // background-size: cover;
+}
+
+@media (min-width: 1921px) {
+
+    html,
+    body {
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+}
+
+
+$text-color: rgb(255, 255, 255);
+$default-color: rgba($text-color, 0.9);
