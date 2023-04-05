@@ -46,10 +46,7 @@ class HompOverlay:
         self.auth = HompOverlayAuth()
         self.app_id = None
         self.cr_policy = HompOverlayCrPolicy()
-        self.trans_policy = HompOverlayTransPolicy()
-
         self.has_cr_policy = False
-        self.has_trans_policy = False
         self.set_data(data)
 
     def to_json(self, types):
@@ -71,9 +68,6 @@ class HompOverlay:
             if self.has_cr_policy:
                 result['cr-policy'] = self.cr_policy.to_json()
 
-            if self.has_trans_policy:
-                result['trans_policy'] = self.trans_policy.to_json()
-
             return {'overlay': result}
 
         elif types == self.MODIFICATION:
@@ -92,10 +86,7 @@ class HompOverlay:
                 if self.auth.peer_list is not None:
                     auth['peerlist'] = self.auth.peer_list
                 result['auth'] = auth
-
-            if self.has_trans_policy:
-                result['trans_policy'] = self.trans_policy.to_json()
-
+            
             if self.title is None:
                 del result['title']
             if self.expires is None:
@@ -122,8 +113,6 @@ class HompOverlay:
         self.app_id = data.get('app-id')
         if 'cr-policy' in data:
             self.set_cr_policy(data.get('cr-policy'))
-        if 'trans_policy' in data:
-            self.set_trans_policy(data.get('trans_policy'))
 
     def is_valid(self, types):
         if types == self.CREATION:
@@ -179,15 +168,6 @@ class HompOverlay:
         self.cr_policy.mD_Cache = data.get('mD_Cache')  # 데이터의 최소 유지 시간
         self.cr_policy.recovery_by = data.get('recovery-by')  # push & pull
 
-    def set_trans_policy(self, data):
-        self.has_trans_policy = True
-        self.trans_policy.rate_control_quantity = data.get('rate-control-quantity')
-        self.trans_policy.rate_control_bitrate = data.get('rate-control-bitrate')
-        self.trans_policy.transmission_control = data.get('transmission-control')
-        self.trans_policy.auth_list = data.get('auth-list')
-        self.trans_policy.has_auth_list = len(self.trans_policy.auth_list) > 0
-
-
 class HompOverlayAuth:
     def __init__(self):
         self.keyword = None
@@ -213,6 +193,18 @@ class HompOverlayAuth:
 
         return result
 
+class HompOverlayOwnership:
+    def __init__(self, data):
+        self.owner_id = None
+        self.admin_key = None
+        self.set_data(data)
+
+    def set_data(self, data):
+        self.owner_id = data.get('owner-id')
+        self.admin_key = data.get('admin-key')
+
+    def is_valid(self):
+        return self.owner_id is not None or self.admin_key is not None
 
 class HompOverlayCrPolicy:
     def __init__(self):
@@ -226,29 +218,6 @@ class HompOverlayCrPolicy:
             'mD_Cache': self.mD_Cache,
             'recovery-by': self.recovery_by
         }
-
-
-class HompOverlayTransPolicy:
-    def __init__(self):
-        self.rate_control_quantity = None
-        self.rate_control_bitrate = None
-        self.transmission_control = None
-        self.auth_list = None
-
-        self.has_auth_list = False
-
-    def to_json(self, base=True):
-        result = {
-            'rate-control-quantity': self.rate_control_quantity,
-            'rate-control-bitrate': self.rate_control_bitrate,
-            'transmission-control': self.transmission_control,
-            'auth-list': self.auth_list
-        }
-        if not base:
-            del result['transmission-control']
-            del result['auth-list']
-        return result
-
 
 class HompOverlayPeer:
     JOIN = 11
@@ -270,13 +239,9 @@ class HompOverlayPeer:
         self.heartbeat_interval = None
         self.heartbeat_timeout = None
         self.cr_policy = HompOverlayCrPolicy()
-        self.trans_policy = HompOverlayTransPolicy()
         self.status = HompPeerStatus()
-        # self.app_data = []
-        # self.has_app_data = False
         self.overlay_app_id = None
         self.has_cr_policy = False
-        self.has_trans_policy = False
         self.has_status = False
 
         self.set_data(data)
@@ -286,24 +251,26 @@ class HompOverlayPeer:
         self.overlay_id = overlay_data.get('overlay-id')
         self.type = overlay_data.get('type')
         self.sub_type = overlay_data.get('sub-type')
-        self.expires = overlay_data.get('expires')
         if 'auth' in overlay_data and 'access_key' in overlay_data.get('auth'):
             self.auth.access_key = overlay_data.get('auth').get('access_key')
 
-        self.recovery = overlay_data.get('recovery') if 'recovery' in overlay_data else False
-        self.ticket_id = overlay_data.get('ticket-id')
+        #self.recovery = overlay_data.get('recovery') if 'recovery' in overlay_data else False
+        
 
         if 'peer' in data:
             peer_data = data.get('peer')
             self.peer.peer_id = peer_data.get('peer-id')
+            self.peer.instance_id = peer_data.get('instance-id')
             self.peer.address = peer_data.get('address')
             if 'auth' in peer_data and 'password' in peer_data.get('auth'):
                 self.peer.auth.password = peer_data.get('auth').get('password')
             self.status_code = 202 if self.sub_type == 'tree' else 200
+            self.expires = peer_data.get('expires')
+            self.ticket_id = peer_data.get('ticket-id')
 
-            if 'status' in peer_data:
+            if 'status' in data:
                 self.has_status = True
-                peer_status_data = peer_data.get('status')
+                peer_status_data = data.get('status')
                 self.status.num_primary = peer_status_data.get('num_primary')
                 self.status.num_out_candidate = peer_status_data.get('num_out_candidate')
                 self.status.num_in_candidate = peer_status_data.get('num_in_candidate')
@@ -334,17 +301,9 @@ class HompOverlayPeer:
         self.cr_policy.recovery_by = data.get('recovery_by')
         self.has_cr_policy = self.cr_policy.recovery_by is not None
 
-        self.trans_policy.rate_control_quantity = data.get('rate_control_quantity')
-        self.trans_policy.rate_control_bitrate = data.get('rate_control_bitrate')
-        self.trans_policy.transmission_control = data.get('transmission_control')
-        # self.trans_policy.auth_list = data.get('auth-list')
-        # self.trans_policy.has_auth_list = len(self.trans_policy.auth_list) > 0
-        self.has_trans_policy = data.get('rate_control_quantity') is not None and data.get(
-            'rate_control_bitrate') is not None
-
     def valid_base(self):
-        return self.overlay_id is not None and self.peer.peer_id is not None and \
-               self.peer.address is not None and self.peer.auth.password is not None
+        return self.overlay_id is not None and self.peer.peer_id is not None and self.peer.instance_id is not None and \
+               self.peer.instance_id > 0 and self.peer.address is not None and self.peer.auth.password is not None
 
     def valid_status(self):
         return self.has_status and self.status.num_primary is not None and \
@@ -359,8 +318,8 @@ class HompOverlayPeer:
         elif types == HompOverlayPeer.REPORT:
             return self.overlay_id is not None and self.valid_status()
         elif types == HompOverlayPeer.LEAVE:
-            return self.overlay_id is not None and \
-                   self.peer.peer_id is not None and self.peer.auth.password is not None
+            return self.overlay_id is not None and self.peer.peer_id is not None and \
+                    self.peer.instance_id is not None and self.peer.instance_id > 0 and self.peer.auth.password is not None
 
     def to_json(self, types, peer_info_list=None):
         if types == self.BASE:
@@ -370,13 +329,11 @@ class HompOverlayPeer:
                 'overlay-id': self.overlay_id,
                 'type': self.type,
                 'sub-type': self.sub_type,
-                'expires': self.expires,
-                'heartbeat-interval': self.heartbeat_interval,
-                'heartbeat-timeout': self.heartbeat_timeout,
-                'ticket-id': self.ticket_id,
                 'status': {
                     'peer_info_list': peer_info_list
-                }
+                },
+                'heartbeat-interval': self.heartbeat_interval,
+                'heartbeat-timeout': self.heartbeat_timeout                
             }
 
             if self.status_code == 202 and self.overlay_app_id is not None:
@@ -387,23 +344,29 @@ class HompOverlayPeer:
                 del result_overlay['heartbeat-timeout']
                 del result_overlay['ticket-id']
 
-            if self.has_trans_policy:
-                result_overlay['trans_policy'] = self.trans_policy.to_json(False)
             if self.has_cr_policy and self.status_code == 202:
                 result_overlay['cr-policy'] = self.cr_policy.to_json()
+            
+            result_peer = {
+                'peer-id': self.peer.peer_id,
+                'instance-id': self.peer.instance_id,
+                'ticket-id': self.ticket_id,
+                'expires': self.expires
+            }
 
-            result = {'overlay': result_overlay}
+            result = {'overlay': result_overlay, 'peer': result_peer}
             # if self.has_app_data:
             #     result['app'] = self.app_data
             return result
         elif types == self.REFRESH:
             result = {
                 'overlay': {
-                    'overlay-id': self.overlay_id,
-                    'expires': self.expires
+                    'overlay-id': self.overlay_id
                 },
                 'peer': {
-                    'peer-id': self.peer.peer_id
+                    'peer-id': self.peer.peer_id,
+                    'instance-id': self.peer.instance_id,
+                    'expires': self.expires
                     # 'address': self.peer.address,
                     # 'auth': {
                     #     'password': self.peer.auth.password
@@ -423,6 +386,7 @@ class HompPeerAuth:
 class HompPeer:
     def __init__(self):
         self.peer_id = None
+        self.instance_id = 0
         self.address = None
         self.auth = HompPeerAuth()
 

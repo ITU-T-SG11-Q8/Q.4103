@@ -28,7 +28,7 @@ from flask_restful import Resource
 
 from config import WEB_SOCKET_CONFIG, LOG_CONFIG
 from classes.overlay import Overlay
-from handler.message import HompOverlay
+from handler.message import HompOverlay, HompOverlayOwnership
 from data.factory import Factory
 from database.db_connector import DBConnector
 import database.db_query as query
@@ -54,8 +54,7 @@ class HybridOverlay(Resource):
                 request_overlay.heartbeat_interval, request_overlay.heartbeat_timeout, request_overlay.auth.keyword,
                 request_overlay.auth.type, request_overlay.auth.admin_key, request_overlay.auth.access_key,
                 request_overlay.app_id, request_overlay.cr_policy.mN_Cache, request_overlay.cr_policy.mD_Cache,
-                request_overlay.cr_policy.recovery_by, request_overlay.trans_policy.rate_control_quantity,
-                request_overlay.trans_policy.rate_control_bitrate, request_overlay.trans_policy.transmission_control)
+                request_overlay.cr_policy.recovery_by)
             db_connector.insert(query.INSERT_HP2P_OVERLAY, overlay_parameters)
 
             if request_overlay.auth.has_peer_list:
@@ -63,12 +62,6 @@ class HybridOverlay(Resource):
                 for peer_id in request_overlay.auth.peer_list:
                     auth_peer_parameters.append((request_overlay.overlay_id, peer_id))
                 db_connector.insert_all(query.INSERT_HP2P_AUTH_PEER, auth_peer_parameters)
-
-            if request_overlay.trans_policy.has_auth_list:
-                policy_auth_peer_parameters = []
-                for peer_id in request_overlay.trans_policy.auth_list:
-                    policy_auth_peer_parameters.append((request_overlay.overlay_id, peer_id))
-                db_connector.insert_all(query.INSERT_HP2P_OVERLAY_TRANS_POLICY_AUTH_PEER, policy_auth_peer_parameters)
 
             overlay = Overlay()
             overlay.overlay_id = request_overlay.overlay_id
@@ -156,13 +149,6 @@ class HybridOverlay(Resource):
                             'recovery-by': select_overlay.get('recovery_by')
                         }
 
-                    if select_overlay.get('transmission_control') is not None:
-                        overlay['trans_policy'] = {
-                            'rate-control-quantity': select_overlay.get('rate_control_quantity'),
-                            'rate-control-bitrate': select_overlay.get('rate_control_bitrate'),
-                            'transmission-control': select_overlay.get('transmission_control')
-                        }
-
                     result.append({'overlay': overlay})
 
             return result, 200
@@ -187,6 +173,14 @@ class HybridOverlay(Resource):
             if select_overlay is None:
                 raise ValueError
 
+            ownership = request_data.get('ownership')
+            request_ownership = None
+
+            if ownership is not None:
+                request_ownership = HompOverlayOwnership(ownership)
+                if not request_ownership.is_valid():
+                    raise ValueError            
+
             set_query = ''
             parameters = []
             if request_overlay.title is not None:
@@ -198,6 +192,15 @@ class HybridOverlay(Resource):
             if request_overlay.description is not None:
                 set_query += query.SET_DESCRIPTION
                 parameters.append(request_overlay.description)
+            if request_ownership is not None:
+                if request_ownership.owner_id is not None:
+                    set_query += query.SET_OWNER_ID
+                    parameters.append(request_ownership.owner_id)
+                    request_overlay.owner_id = request_ownership.owner_id
+                if request_ownership.admin_key is not None:
+                    set_query += query.SET_ADMIN_KEY
+                    parameters.append(request_ownership.admin_key)
+                    request_overlay.auth.admin_key = request_ownership.admin_key
 
             parameters.append(request_overlay.overlay_id)
             update_query = query.UPDATE_HP2P_OVERLAY + set_query + query.WHERE_OVERLAY_ID

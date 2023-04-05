@@ -73,12 +73,6 @@ class DBManager:
                 self.cursor.execute(query.CREATE_HP2P_AUTH_PEER)
                 self.print_log('[DBManager] CREATE TABLE hp2p_auth_peer')
 
-            self.cursor.execute(query.SHOW_HP2P_OVERLAY_TRANS_POLICY_AUTH_PEER)
-            hp2p_overlay_trans_policy_auth_peer = self.cursor.fetchone()
-            if hp2p_overlay_trans_policy_auth_peer is None:
-                self.cursor.execute(query.CREATE_HP2P_OVERLAY_TRANS_POLICY_AUTH_PEER)
-                self.print_log('[DBManager] CREATE TABLE hp2p_overlay_trans_policy_auth_peer')
-
             self.connect.commit()
         except Exception as err_init:
             self.connect.rollback()
@@ -120,16 +114,18 @@ class DBManager:
             for select_peer in select_peer_list:
                 ticket_id = select_peer.get('ticket_id')
                 peer_id = select_peer.get('peer_id')
+                instance_id = select_peer.get('instance_id')
                 max_ticket_id = max(max_ticket_id, ticket_id)
                 peer = Peer()
                 peer.overlay_id = overlay_id
                 peer.expires = select_peer.get('expires')
                 peer.peer_id = peer_id
+                peer.instance_id = instance_id
                 peer.ticket_id = ticket_id
                 peer.update_time = datetime.now()
                 if select_peer.get('costmap') is not None:
                     peer.costmap = json.loads(select_peer.get('costmap'))
-                overlay.add_peer(peer_id, peer)
+                overlay.add_peer(peer_id, instance_id, peer)
 
             overlay.set_current_ticket_id(max_ticket_id)
             Factory.get().add_overlay(overlay_id, overlay)

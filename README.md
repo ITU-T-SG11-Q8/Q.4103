@@ -5,7 +5,7 @@
 ### Pre-requisite
 - mysql(or maria) DBMS
 ### Usage
-1. Import 'HOMS/hp2p_2020.sql' file into DBMS 
+1. Import 'HOMS/hp2p_2022.sql' file into DBMS 
 2. Create venv
 ```
 - Windows
@@ -96,6 +96,10 @@ $ python3 homs_run.py
      Copy all directorys/files in 'WebUI/dist' into 'Peer/webClient(in case of Server, HOMS/HompServer/static)' when the build is complete.   
      All directorys/files in the existing folder are deleted before copying.
 
+## Live Demo
+You can check the running test server by accessing the following URL:  
+http://144.24.179.237:8081/
+  
 ## LICENSE
 
 The MIT License

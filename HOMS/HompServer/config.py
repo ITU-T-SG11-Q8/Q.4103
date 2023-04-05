@@ -44,7 +44,7 @@ DATABASE_CONFIG = {
     'DB_PORT': 3306,  # DB ?��?�� Port (4306, 3386)
     'DB_USER': 'prep',  # DB ?��?��?��
     'DB_PASS': 'prep',  # DB 비�??번호
-    'DB_DATABASE': 'hp2p_2020'  # DB ?���?
+    'DB_DATABASE': 'hp2p_2022'  # DB ?���?
 }
 # ?��로토�? ?���? ?��?��
 HOMS_CONFIG = {

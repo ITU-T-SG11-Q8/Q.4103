@@ -66,24 +66,27 @@ class ServerScheduler:
             schedule.run_pending()
             time.sleep(self._sleep_interval)
 
-    def delete_peer_and_empty_overlay(self, overlay_id, peer_id):
+    def delete_peer_and_empty_overlay(self, overlay_id, peer_id, instance_id):
         db_connector = DBConnector()
         try:
-            db_connector.delete(query.DELETE_HP2P_PEER, (peer_id, overlay_id))
+            db_connector.delete(query.DELETE_HP2P_PEER, (peer_id, instance_id, overlay_id))
             overlay = Factory.get().get_overlay(overlay_id)
-            overlay.delete_peer(peer_id)
-            Factory.get().get_web_socket_manager().send_log_message(overlay_id, peer_id, 'Overlay Leave.')
-            self.print_log('Leave Peer Overlay: {0}, Peer ID : {1}'.format(overlay_id, peer_id))
+            overlay.delete_peer(peer_id, instance_id)
+
+            peerKey = peer_id + ';' + str(instance_id)
+
+            Factory.get().get_web_socket_manager().send_log_message(overlay_id, peerKey, 'Overlay Leave.')
+            self.print_log('Leave Peer Overlay: {0}, Peer ID : {1}'.format(overlay_id, peerKey))
 
             if self._is_delete_empty_overlay and overlay.is_empty_overlay():
                 db_connector.delete_hp2p_data(overlay_id)
 
                 Factory.get().delete_overlay(overlay_id)
                 Factory.get().get_web_socket_manager().send_remove_overlay_message(overlay_id)
-                Factory.get().get_web_socket_manager().send_log_message(overlay_id, peer_id, 'Overlay Removal(Empty).')
-                self.print_log('Removal Overlay(Empty). {0} / {1}'.format(overlay_id, peer_id))
+                Factory.get().get_web_socket_manager().send_log_message(overlay_id, peerKey, 'Overlay Removal(Empty).')
+                self.print_log('Removal Overlay(Empty). {0} / {1}'.format(overlay_id, peerKey))
             else:
-                Factory.get().get_web_socket_manager().send_delete_peer_message(overlay_id, peer_id)
+                Factory.get().get_web_socket_manager().send_delete_peer_message(overlay_id, peerKey)
 
             db_connector.commit()
         except Exception as err_delete:
@@ -105,11 +108,11 @@ class ServerScheduler:
                     now_time = datetime.strptime(str(datetime.now()), self.fmt)
                     delta_time = now_time - update_time
                     if delta_time.seconds > peer.expires:
-                        delete_peer_list.append((overlay.overlay_id, peer.peer_id))
+                        delete_peer_list.append((overlay.overlay_id, peer.peer_id, peer.instance_id))
 
             if len(delete_peer_list) > 0:
-                for overlay_id, peer_id in delete_peer_list:
-                    self.delete_peer_and_empty_overlay(overlay_id, peer_id)
+                for overlay_id, peer_id, instance_id in delete_peer_list:
+                    self.delete_peer_and_empty_overlay(overlay_id, peer_id, instance_id)
 
         except Exception as err_check_peer:
             self.print_log(err_check_peer)
