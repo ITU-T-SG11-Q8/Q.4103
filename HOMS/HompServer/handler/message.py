@@ -38,7 +38,7 @@ class HompOverlay:
         self.type = None
         self.sub_type = None
         self.owner_id = None
-        self.expires = None
+        #self.expires = None
         self.status = 'active'
         self.description = None
         self.heartbeat_interval = None
@@ -56,7 +56,7 @@ class HompOverlay:
                 'type': self.type,
                 'sub-type': self.sub_type,
                 'owner-id': self.owner_id,
-                'expires': self.expires,
+                #'expires': self.expires,
                 'heartbeat-interval': self.heartbeat_interval,
                 'heartbeat-timeout': self.heartbeat_timeout,
                 'auth': self.auth.to_json()
@@ -75,7 +75,7 @@ class HompOverlay:
                 'overlay-id': self.overlay_id,
                 'title': self.title,
                 'owner-id': self.owner_id,
-                'expires': self.expires,
+                #'expires': self.expires,
                 'description': self.description
             }
 
@@ -89,8 +89,8 @@ class HompOverlay:
             
             if self.title is None:
                 del result['title']
-            if self.expires is None:
-                del result['expires']
+            #if self.expires is None:
+            #    del result['expires']
             if self.description is None:
                 del result['description']
 
@@ -105,7 +105,7 @@ class HompOverlay:
         self.type = data.get('type')
         self.sub_type = data.get('sub-type')
         self.owner_id = data.get('owner-id')
-        self.expires = data.get('expires') if 'expires' in data else 0
+        #self.expires = data.get('expires') if 'expires' in data else 0
         self.description = data.get('description')
         self.heartbeat_interval = data.get('heartbeat-interval')
         self.heartbeat_timeout = data.get('heartbeat-timeout')

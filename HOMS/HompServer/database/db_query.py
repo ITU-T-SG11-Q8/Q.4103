@@ -36,7 +36,6 @@ CREATE_HP2P_OVERLAY = "CREATE TABLE IF NOT EXISTS hp2p_overlay ( " \
                       "overlay_type varchar(50) COLLATE utf8_unicode_ci NOT NULL, " \
                       "sub_type varchar(50) COLLATE utf8_unicode_ci NOT NULL, " \
                       "owner_id varchar(50) COLLATE utf8_unicode_ci NOT NULL, " \
-                      "expires int(11) NOT NULL DEFAULT 0, " \
                       "overlay_status varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL, " \
                       "description varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL, " \
                       "heartbeat_interval int(11) NOT NULL DEFAULT 0,  " \
@@ -106,11 +105,11 @@ DELETE_HP2P_OVERLAY_BY_OVERLAY_ID = "DELETE FROM hp2p_overlay WHERE overlay_id =
 DELETE_HP2P_AUTH_PEER_BY_OVERLAY_ID = "DELETE FROM hp2p_auth_peer WHERE overlay_id = %s"
 
 INSERT_HP2P_OVERLAY = "INSERT INTO hp2p_overlay " \
-                      "(overlay_id, title, overlay_type, sub_type, owner_id, expires, overlay_status," \
+                      "(overlay_id, title, overlay_type, sub_type, owner_id, overlay_status," \
                       "description, heartbeat_interval, heartbeat_timeout, auth_keyword, auth_type, " \
                       "auth_admin_key, auth_access_key, app_id, mn_cache, md_cache, recovery_by," \
                       " created_at, updated_at) " \
-                      "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, " \
+                      "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, " \
                       "NOW(), NOW())"
 
 INSERT_HP2P_AUTH_PEER = "INSERT INTO hp2p_auth_peer (overlay_id, peer_id, updated_at) VALUES (%s, %s, now())"

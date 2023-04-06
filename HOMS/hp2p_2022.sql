@@ -32,7 +32,6 @@ CREATE TABLE IF NOT EXISTS `hp2p_overlay` (
   `overlay_type` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `sub_type` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `owner_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `expires` int(11) NOT NULL DEFAULT 0,
   `overlay_status` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `description` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `heartbeat_interval` int(11) NOT NULL DEFAULT 0,

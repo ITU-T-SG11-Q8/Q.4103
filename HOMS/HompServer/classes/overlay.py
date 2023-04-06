@@ -25,7 +25,7 @@
 class Overlay:
     def __init__(self):
         self.overlay_id = None
-        self.expires = 0
+        #self.expires = 0
         self.heartbeat_interval = 0
         self.heartbeat_timeout = 0
         self.update_time = None

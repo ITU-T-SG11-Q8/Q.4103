@@ -50,7 +50,7 @@ class HybridOverlay(Resource):
 
             overlay_parameters = (
                 request_overlay.overlay_id, request_overlay.title, request_overlay.type, request_overlay.sub_type,
-                request_overlay.owner_id, request_overlay.expires, request_overlay.status, request_overlay.description,
+                request_overlay.owner_id, request_overlay.status, request_overlay.description,
                 request_overlay.heartbeat_interval, request_overlay.heartbeat_timeout, request_overlay.auth.keyword,
                 request_overlay.auth.type, request_overlay.auth.admin_key, request_overlay.auth.access_key,
                 request_overlay.app_id, request_overlay.cr_policy.mN_Cache, request_overlay.cr_policy.mD_Cache,
@@ -65,12 +65,12 @@ class HybridOverlay(Resource):
 
             overlay = Overlay()
             overlay.overlay_id = request_overlay.overlay_id
-            overlay.expires = request_overlay.expires
+            #overlay.expires = request_overlay.expires
             overlay.heartbeat_interval = request_overlay.heartbeat_interval
             overlay.heartbeat_timeout = request_overlay.heartbeat_timeout
 
-            if request_overlay.expires > 0:
-                overlay.update_time = datetime.now()
+            #if request_overlay.expires > 0:
+            #    overlay.update_time = datetime.now()
 
             Factory.get().add_overlay(overlay.overlay_id, overlay)
             Factory.get().get_web_socket_manager().send_create_overlay_message(request_overlay.overlay_id)
@@ -128,7 +128,7 @@ class HybridOverlay(Resource):
                         'type': select_overlay.get('overlay_type'),
                         'sub-type': select_overlay.get('sub_type'),
                         'owner-id': select_overlay.get('owner_id'),
-                        'expires': select_overlay.get('expires'),
+                        #'expires': select_overlay.get('expires'),
                         'status': {
                             'num_peers': num_peers,
                             'status': select_overlay.get('overlay_status')
@@ -186,9 +186,9 @@ class HybridOverlay(Resource):
             if request_overlay.title is not None:
                 set_query += query.SET_TITLE
                 parameters.append(request_overlay.title)
-            if request_overlay.expires is not None:
-                set_query += query.SET_EXPIRES
-                parameters.append(request_overlay.expires)
+            #if request_overlay.expires is not None:
+            #    set_query += query.SET_EXPIRES
+            #    parameters.append(request_overlay.expires)
             if request_overlay.description is not None:
                 set_query += query.SET_DESCRIPTION
                 parameters.append(request_overlay.description)
@@ -219,11 +219,11 @@ class HybridOverlay(Resource):
                     db_connector.insert_all(query.INSERT_HP2P_AUTH_PEER, auth_peer_list_parameters)
 
             overlay: Overlay = Factory.get().get_overlay(request_overlay.overlay_id)
-            if request_overlay.expires is not None:
-                overlay.expires = request_overlay.expires
+            #if request_overlay.expires is not None:
+            #    overlay.expires = request_overlay.expires
 
-            if overlay.expires > 0:
-                overlay.update_time = datetime.now()
+            #if overlay.expires > 0:
+            #    overlay.update_time = datetime.now()
 
             Factory.get().get_web_socket_manager().send_log_message(request_overlay.overlay_id,
                                                                     request_overlay.owner_id, 'Overlay Modification.')

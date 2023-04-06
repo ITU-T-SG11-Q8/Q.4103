@@ -56,7 +56,7 @@ HOMS_CONFIG = {
     },
     'RECOVERY_ENTRY_POINT_POS': 100,  # (복구 ?��) ?��버에?�� ?��공하?�� Peer 기�???��, ?��?�� N% �? ?���?
     'PEER_INFO_LIST_COUNT': 3,  # ?��버에?�� ?��공하?�� 목록?�� Peer ?��
-    'OVERLAY_EXPIRES': 0,  # Overlay Expires �?(�?)
+    #'OVERLAY_EXPIRES': 0,  # Overlay Expires �?(�?)
     'PEER_EXPIRES': 3600,  # Peer Expires �?(�?)
     'DELETE_EMPTY_OVERLAY': True
 }

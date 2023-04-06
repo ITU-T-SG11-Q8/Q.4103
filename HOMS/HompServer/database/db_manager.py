@@ -103,7 +103,7 @@ class DBManager:
             overlay_id = select_overlay.get('overlay_id')
             overlay = Overlay()
             overlay.overlay_id = overlay_id
-            overlay.expires = select_overlay.get('expires')
+            #overlay.expires = select_overlay.get('expires')
             overlay.heartbeat_interval = select_overlay.get('heartbeat_interval')
             overlay.heartbeat_timeout = select_overlay.get('heartbeat_timeout')
 
