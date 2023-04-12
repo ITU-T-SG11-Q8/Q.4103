@@ -12,11 +12,11 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 
 
--- hp2p_2020 데이터베이스 구조 내보내기
-CREATE DATABASE IF NOT EXISTS `hp2p_2020` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
-USE `hp2p_2020`;
+-- hp2p_2022 데이터베이스 구조 내보내기
+CREATE DATABASE IF NOT EXISTS `hp2p_2022` /*!40100 DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci */;
+USE `hp2p_2022`;
 
--- 테이블 hp2p_2020.hp2p_auth_peer 구조 내보내기
+-- 테이블 hp2p_2022.hp2p_auth_peer 구조 내보내기
 CREATE TABLE IF NOT EXISTS `hp2p_auth_peer` (
   `overlay_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `peer_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
@@ -25,14 +25,13 @@ CREATE TABLE IF NOT EXISTS `hp2p_auth_peer` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
--- 테이블 hp2p_2020.hp2p_overlay 구조 내보내기
+-- 테이블 hp2p_2022.hp2p_overlay 구조 내보내기
 CREATE TABLE IF NOT EXISTS `hp2p_overlay` (
   `overlay_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `title` varchar(100) COLLATE utf8_unicode_ci NOT NULL,
   `overlay_type` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `sub_type` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `owner_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `expires` int(11) NOT NULL DEFAULT 0,
   `overlay_status` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `description` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `heartbeat_interval` int(11) NOT NULL DEFAULT 0,
@@ -45,28 +44,18 @@ CREATE TABLE IF NOT EXISTS `hp2p_overlay` (
   `mn_cache` int(11) DEFAULT NULL,
   `md_cache` int(11) DEFAULT NULL,
   `recovery_by` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `rate_control_quantity` int(11) DEFAULT NULL,
-  `rate_control_bitrate` int(11) DEFAULT NULL,
-  `transmission_control` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `trans_policy_auth_list` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created_at` datetime NOT NULL,
   `updated_at` datetime NOT NULL,
   PRIMARY KEY (`overlay_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
--- 테이블 hp2p_2020.hp2p_overlay_trans_policy_auth_peer 구조 내보내기
-CREATE TABLE IF NOT EXISTS `hp2p_overlay_trans_policy_auth_peer` (
-  `overlay_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `peer_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`overlay_id`,`peer_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- 내보낼 데이터가 선택되어 있지 않습니다.
--- 테이블 hp2p_2020.hp2p_peer 구조 내보내기
+-- 테이블 hp2p_2022.hp2p_peer 구조 내보내기
 CREATE TABLE IF NOT EXISTS `hp2p_peer` (
   `peer_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  CREATE TABLE `hp2p_peer` (
+  `peer_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
+  `instance_id` bigint NOT NULL DEFAULT '0',
   `overlay_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `ticket_id` int(11) DEFAULT NULL,
   `overlay_type` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -81,7 +70,7 @@ CREATE TABLE IF NOT EXISTS `hp2p_peer` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `report_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`peer_id`,`overlay_id`)
+  PRIMARY KEY (`peer_id`,`instance_id`,`overlay_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.
@@ -92,6 +81,6 @@ CREATE TABLE IF NOT EXISTS `hp2p_peer` (
 
 CREATE USER 'prep'@'localhost' IDENTIFIED BY 'prep';
 FLUSH PRIVILEGES;
-GRANT ALL PRIVILEGES ON hp2p_2020.* TO 'prep'@'localhost';
+GRANT ALL PRIVILEGES ON hp2p_2022.* TO 'prep'@'localhost';
 FLUSH PRIVILEGES;
 

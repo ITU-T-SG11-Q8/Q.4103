@@ -33,7 +33,7 @@ class WebSocketManager:
     def __init__(self):
         self._peer_web_socket_dict = {}
         self._client_list = []
-        print('INITTTTTTTTTTTTTT')
+
 
     def add_peer_web_socket(self, peer_id, client):
         if client not in self._peer_web_socket_dict:
@@ -61,7 +61,6 @@ class WebSocketManager:
             return False
 
     def append_client(self, client):
-        print('APPENDDDDDD', client)
         print(self)
         if client not in self._client_list:
             print('[WebSocketManager] Append Client =>', client.address)
@@ -69,36 +68,29 @@ class WebSocketManager:
             print('afterappend', self._client_list)
 
     def remove_client(self, client):
-        print('REMOVEEEEEE', client)
         if client in self._client_list:
             print('[WebSocketManager] Remove Client =>', client.address)
             self._client_list.remove(client)
 
     def send_message_to_client(self, message):
-        print('GGGG', self._client_list)
         print(self)
         for client in self._client_list:
-            print('fffffffffff', json.dumps(message))
             client.send_message(json.dumps(message))
 
     def send_create_overlay_message(self, overlay_id):
-        print('CCCCCCCC')
         self.send_message_to_client({'overlay_id': overlay_id, 'type': 'overlay', 'action': 'create'})
 
     def send_remove_overlay_message(self, overlay_id):
-        print('RRRRRRRRRRRR')
         self.send_message_to_client({'overlay_id': overlay_id, 'type': 'overlay', 'action': 'remove'})
 
     def send_add_peer_message(self, overlay_id, peer_id, ticket_id):
-        print('BBBBBBBBB')
         self.send_message_to_client(self.create_add_node_message(overlay_id, peer_id, ticket_id))
 
     def send_delete_peer_message(self, overlay_id, peer_id):
         self.send_message_to_client(self.create_delete_node_message(overlay_id, peer_id))
 
-    def send_update_peer_message(self, overlay_id, costmap):
-        print('AAAAAAAA')
-        message = self.create_update_link_message(overlay_id, costmap)
+    def send_update_peer_message(self, overlay_id, peer_id, costmap):
+        message = self.create_update_link_message(overlay_id, peer_id, costmap)
         if message is not None:
             self.send_message_to_client(message)
 
@@ -114,23 +106,23 @@ class WebSocketManager:
 
         for p_item in get_peer_dic.values():
             peer: Peer = p_item
-            node = {'id': peer.peer_id, 'ticket_id': peer.ticket_id}
+            node = {'id': peer.peer_id + ";" + str(peer.instance_id), 'ticket_id': peer.ticket_id}
             if peer.ticket_id == 1:
                 node['seeder'] = True
             nodes.append(node)
-            costmap = peer.costmap.get('costmap')
+            costmap = peer.costmap
 
             if costmap is not None and costmap.get('primary') is not None and costmap.get(
                     'outgoing_candidate') is not None:
-                for primary_peer_id in peer.costmap.get('costmap').get('primary'):
-                    link = {'source': peer.peer_id, 'target': primary_peer_id, 'primary': True}
-                    reverse_link = {'source': primary_peer_id, 'target': peer.peer_id, 'primary': True}
+                for primary_peer_id in peer.costmap.get('primary'):
+                    link = {'source': peer.peer_id + ";" + str(peer.instance_id), 'target': primary_peer_id, 'primary': True}
+                    reverse_link = {'source': primary_peer_id, 'target': peer.peer_id + ";" + str(peer.instance_id), 'primary': True}
 
                     if link not in links and reverse_link not in links:
                         links.append(link)
 
-                for candidate_peer_id in peer.costmap.get('costmap').get('outgoing_candidate'):
-                    links.append({'source': peer.peer_id, 'target': candidate_peer_id, 'primary': False})
+                for candidate_peer_id in peer.costmap.get('outgoing_candidate'):
+                    links.append({'source': peer.peer_id + ";" + str(peer.instance_id), 'target': candidate_peer_id, 'primary': False})
 
         return {
             'overlay_id': overlay.overlay_id,
@@ -167,9 +159,10 @@ class WebSocketManager:
         }
 
     @classmethod
-    def create_update_link_message(cls, overlay_id, costmap):
-        peer_id = costmap.get('peer_id')
-        costmap_dict = costmap.get('costmap')
+    def create_update_link_message(cls, overlay_id, peer_id, costmap):
+        #peer_id = costmap.get('peer_id')
+        #costmap_dict = costmap.get('costmap')
+        costmap_dict = costmap
 
         links = []
 

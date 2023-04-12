@@ -75,7 +75,6 @@ class DBConnector:
         self.execute(query, args)
 
     def delete_hp2p_data(self, overlay_id):
-        self.delete(hp2p_query.DELETE_HP2P_OVERLAY_TRANS_POLICY_AUTH_PEER_BY_OVERLAY_ID, (overlay_id,))
         self.delete(hp2p_query.DELETE_HP2P_AUTH_PEER_BY_OVERLAY_ID, (overlay_id,))
         self.delete(hp2p_query.DELETE_HP2P_PEER_BY_OVERLAY_ID, (overlay_id,))
         self.delete(hp2p_query.DELETE_HP2P_OVERLAY_BY_OVERLAY_ID, (overlay_id,))
