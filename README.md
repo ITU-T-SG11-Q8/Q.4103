@@ -1,5 +1,14 @@
 # Q.4103   
 
+**Disclaimer**: This software is not an official ITU-T publication. 
+This software implements the following standards:
+- ITU-T Q.4100, "Hybrid peer-to-peer communications: Functional architecture"
+- ITU-T Q.4101, "Hybrid peer-to-peer communications: Tree and data recovery procedures"
+- ITU-T Q.4103, "Hybrid peer-to-peer communications: Overlay management protocol"
+
+**Updates**:
+- 2023.04, Updates to support of Q.4102Amd1 aligned with Contribution T22-SG11-C-0163R1, T22-SG11-C-0105
+
 ## HOMS
 
 ### Pre-requisite
