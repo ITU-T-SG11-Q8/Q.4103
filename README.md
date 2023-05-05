@@ -7,7 +7,7 @@ This software implements the following standards:
 - ITU-T Q.4103, "Hybrid peer-to-peer communications: Overlay management protocol"
 
 **Updates**:
-- 2023.04, Updates to support of Q.4102Amd1 aligned with Contribution T22-SG11-C-0163R1, T22-SG11-C-0105
+- 2023.04, Updates to support of Q.4103Amd1 aligned with Contribution T22-SG11-C-0163R1, T22-SG11-C-0105
 
 ## HOMS
 
