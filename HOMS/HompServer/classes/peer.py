@@ -26,7 +26,6 @@ class Peer:
     def __init__(self):
         self.overlay_id = None
         self.peer_id = None
-        self.instance_id = 0
         self.ticket_id = 0
         self.expires = 0
         self.update_time = None

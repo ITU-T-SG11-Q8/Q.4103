@@ -52,10 +52,7 @@ CREATE TABLE IF NOT EXISTS `hp2p_overlay` (
 -- 내보낼 데이터가 선택되어 있지 않습니다.
 -- 테이블 hp2p_2022.hp2p_peer 구조 내보내기
 CREATE TABLE IF NOT EXISTS `hp2p_peer` (
-  `peer_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-  CREATE TABLE `hp2p_peer` (
   `peer_id` varchar(50) CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL,
-  `instance_id` bigint NOT NULL DEFAULT '0',
   `overlay_id` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `ticket_id` int(11) DEFAULT NULL,
   `overlay_type` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -70,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `hp2p_peer` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   `report_time` datetime DEFAULT NULL,
-  PRIMARY KEY (`peer_id`,`instance_id`,`overlay_id`)
+  PRIMARY KEY (`peer_id`,`overlay_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- 내보낼 데이터가 선택되어 있지 않습니다.

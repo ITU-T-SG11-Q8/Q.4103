@@ -106,7 +106,7 @@ class WebSocketManager:
 
         for p_item in get_peer_dic.values():
             peer: Peer = p_item
-            node = {'id': peer.peer_id + ";" + str(peer.instance_id), 'ticket_id': peer.ticket_id}
+            node = {'id': peer.peer_id, 'ticket_id': peer.ticket_id}
             if peer.ticket_id == 1:
                 node['seeder'] = True
             nodes.append(node)
@@ -115,14 +115,14 @@ class WebSocketManager:
             if costmap is not None and costmap.get('primary') is not None and costmap.get(
                     'outgoing_candidate') is not None:
                 for primary_peer_id in peer.costmap.get('primary'):
-                    link = {'source': peer.peer_id + ";" + str(peer.instance_id), 'target': primary_peer_id, 'primary': True}
-                    reverse_link = {'source': primary_peer_id, 'target': peer.peer_id + ";" + str(peer.instance_id), 'primary': True}
+                    link = {'source': peer.peer_id, 'target': primary_peer_id, 'primary': True}
+                    reverse_link = {'source': primary_peer_id, 'target': peer.peer_id, 'primary': True}
 
                     if link not in links and reverse_link not in links:
                         links.append(link)
 
                 for candidate_peer_id in peer.costmap.get('outgoing_candidate'):
-                    links.append({'source': peer.peer_id + ";" + str(peer.instance_id), 'target': candidate_peer_id, 'primary': False})
+                    links.append({'source': peer.peer_id, 'target': candidate_peer_id, 'primary': False})
 
         return {
             'overlay_id': overlay.overlay_id,

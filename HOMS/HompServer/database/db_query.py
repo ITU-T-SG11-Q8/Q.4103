@@ -56,7 +56,6 @@ SHOW_HP2P_PEER = "SHOW TABLES LIKE 'hp2p_peer'"
 
 CREATE_HP2P_PEER = "CREATE TABLE IF NOT EXISTS hp2p_peer ( " \
                    "peer_id varchar(50) COLLATE utf8_unicode_ci NOT NULL, " \
-                   "instance_id bigint NOT NULL DEFAULT '0', " \
                    "overlay_id varchar(50) COLLATE utf8_unicode_ci NOT NULL,  " \
                    "ticket_id int(11) DEFAULT NULL,  " \
                    "overlay_type varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL, " \
@@ -71,7 +70,7 @@ CREATE_HP2P_PEER = "CREATE TABLE IF NOT EXISTS hp2p_peer ( " \
                    "created_at datetime DEFAULT NULL, " \
                    "updated_at datetime DEFAULT NULL, " \
                    "report_time datetime DEFAULT NULL, " \
-                   " PRIMARY KEY (peer_id, instance_id, overlay_id))"
+                   " PRIMARY KEY (peer_id, overlay_id))"
 
 SHOW_HP2P_AUTH_PEER = "SHOW TABLES LIKE 'hp2p_auth_peer'"
 
@@ -96,7 +95,7 @@ SELECT_HP2P_OVERLAY_BY_OVERLAY_ID = "SELECT * FROM hp2p_overlay WHERE overlay_id
 
 SELECT_HP2P_PEER_BY_OVERLAY_ID = "SELECT * FROM hp2p_peer WHERE overlay_id = %s ORDER BY ticket_id"
 
-DELETE_HP2P_PEER = "DELETE FROM hp2p_peer WHERE peer_id = %s AND instance_id = %s AND overlay_id = %s"
+DELETE_HP2P_PEER = "DELETE FROM hp2p_peer WHERE peer_id = %s AND overlay_id = %s"
 
 DELETE_HP2P_PEER_BY_OVERLAY_ID = "DELETE FROM hp2p_peer WHERE overlay_id = %s"
 
@@ -125,7 +124,7 @@ WHERE_DESCRIPTION = " WHERE description LIKE %s"
 SELECT_NUM_PEERS = "SELECT COUNT(*) AS num_peers FROM hp2p_peer WHERE overlay_id = %s"
 
 SELECT_HP2P_OVERLAY_BY_ADMIN_KEY = "SELECT overlay_id, auth_access_key FROM hp2p_overlay " \
-                                   "WHERE overlay_id = %s AND owner_id = %s AND auth_admin_key = %s"
+                                   "WHERE overlay_id = %s AND auth_admin_key = %s"
 
 UPDATE_HP2P_OVERLAY = "UPDATE hp2p_overlay SET updated_at = now()"
 
@@ -147,9 +146,9 @@ SELECT_OVERLAY_ACCESS_KEY = "SELECT auth_access_key FROM hp2p_overlay WHERE over
 
 SELECT_AUTH_PEER_ID = "SELECT peer_id FROM hp2p_auth_peer WHERE overlay_id = %s AND peer_id = %s"
 
-SELECT_HP2P_PEER_PASSWORD = "SELECT * FROM hp2p_peer WHERE peer_id = %s AND instance_id = %s AND overlay_id = %s AND auth_password = %s"
+SELECT_HP2P_PEER_PASSWORD = "SELECT * FROM hp2p_peer WHERE peer_id = %s AND overlay_id = %s AND auth_password = %s"
 
-SELECT_RECOVERY_PEER_LIST = "SELECT v_p_t.peer_id, v_p_t.instance_id, v_p_t.address FROM " \
+SELECT_RECOVERY_PEER_LIST = "SELECT v_p_t.peer_id, v_p_t.address FROM " \
                             " (SELECT p_t.*,@rownum := @rownum + 1 AS rank1 FROM " \
                             " (SELECT * FROM hp2p_peer WHERE " \
                             " overlay_id = %s AND num_primary > 0) p_t," \
@@ -158,7 +157,7 @@ SELECT_RECOVERY_PEER_LIST = "SELECT v_p_t.peer_id, v_p_t.instance_id, v_p_t.addr
                             "WHERE v_p_t.rank1 <= %s AND v_p_t.ticket_id < %s " \
                             "ORDER BY v_p_t.rank1 DESC LIMIT %s"
 
-SELECT_PEER_LIST = "SELECT v_p_t.peer_id, v_p_t.instance_id, v_p_t.address FROM " \
+SELECT_PEER_LIST = "SELECT v_p_t.peer_id, v_p_t.address FROM " \
                    " (SELECT p_t.*,@rownum := @rownum + 1 AS rank1 FROM " \
                    " (SELECT * FROM hp2p_peer WHERE " \
                    " overlay_id = %s AND num_primary > 0) p_t," \
@@ -167,17 +166,17 @@ SELECT_PEER_LIST = "SELECT v_p_t.peer_id, v_p_t.instance_id, v_p_t.address FROM 
                    "WHERE v_p_t.rank1 >= %s LIMIT %s"
 
 INSERT_HP2P_PEER = "INSERT INTO hp2p_peer " \
-                   "(peer_id, instance_id, overlay_id, ticket_id ,overlay_type, sub_type, expires, address, " \
+                   "(peer_id, overlay_id, ticket_id ,overlay_type, sub_type, expires, address, " \
                    "auth_password, created_at, updated_at) " \
-                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW())"
+                   "VALUES (%s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW())"
 
-SELECT_TOP_PEER = "SELECT peer_id, instance_id, address FROM hp2p_peer WHERE overlay_id = %s ORDER BY ticket_id LIMIT 1"
+SELECT_TOP_PEER = "SELECT peer_id, address FROM hp2p_peer WHERE overlay_id = %s ORDER BY ticket_id LIMIT 1"
 
-UPDATE_HP2P_PEER = "UPDATE hp2p_peer SET updated_at = NOW(), expires = %s WHERE overlay_id = %s AND peer_id = %s AND instance_id = %s"
+UPDATE_HP2P_PEER = "UPDATE hp2p_peer SET updated_at = NOW(), expires = %s WHERE overlay_id = %s AND peer_id = %s"
 
-SELECT_HP2P_PEER = "SELECT * FROM hp2p_peer WHERE overlay_id = %s AND peer_id = %s AND instance_id = %s"
+SELECT_HP2P_PEER = "SELECT * FROM hp2p_peer WHERE overlay_id = %s AND peer_id = %s"
 
 UPDATE_HP2P_PEER_COST_MAP = "UPDATE hp2p_peer SET " \
                             "num_primary = %s, num_out_candidate = %s, " \
                             "num_in_candidate = %s, costmap = %s, report_time = NOW() " \
-                            "WHERE overlay_id = %s AND peer_id = %s AND instance_id = %s"
+                            "WHERE overlay_id = %s AND peer_id = %s"

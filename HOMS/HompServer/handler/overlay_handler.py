@@ -155,6 +155,31 @@ class HybridOverlay(Resource):
         except Exception as exception:
             db_connector.rollback()
             return str(exception), 500
+    
+    def originId(self, id):
+        rsltid = None
+
+        if id is not None and id != '':
+            rsltid = id.strip()
+
+            if ';' in rsltid:
+                rsltid = id.split(';')[0]
+            else:
+                rsltid = id
+        
+        return rsltid
+
+    def checkOwnerId(self, ownerid, reqownerid):
+        originreq = self.originId(reqownerid)
+        originid = self.originId(ownerid)
+
+        if originid is not None and originid != '' and originreq is not None and originreq != '':
+            if ownerid != reqownerid:
+                return False
+        else:
+            return False
+        
+        return True
 
     def put(self):
         if LOG_CONFIG['PRINT_PROTOCOL_LOG']:
@@ -168,9 +193,12 @@ class HybridOverlay(Resource):
                 raise ValueError
 
             select_overlay = db_connector.select_one(query.SELECT_HP2P_OVERLAY_BY_ADMIN_KEY, (
-                request_overlay.overlay_id, request_overlay.owner_id, request_overlay.auth.admin_key))
+                request_overlay.overlay_id, request_overlay.auth.admin_key))
 
             if select_overlay is None:
+                raise ValueError
+
+            if self.checkOwnerId(select_overlay.get('owner_id'), request_overlay.owner_id) is False:
                 raise ValueError
 
             ownership = request_data.get('ownership')
@@ -248,9 +276,12 @@ class HybridOverlay(Resource):
                 raise ValueError
 
             select_overlay = db_connector.select_one(query.SELECT_HP2P_OVERLAY_BY_ADMIN_KEY, (
-                request_overlay.overlay_id, request_overlay.owner_id, request_overlay.auth.admin_key))
+                request_overlay.overlay_id, request_overlay.auth.admin_key))
 
             if select_overlay is None:
+                raise ValueError
+            
+            if self.checkOwnerId(select_overlay.get('owner_id'), request_overlay.owner_id) is False:
                 raise ValueError
 
             db_connector.delete_hp2p_data(request_overlay.overlay_id)
