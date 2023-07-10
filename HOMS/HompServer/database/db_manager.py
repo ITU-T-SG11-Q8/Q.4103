@@ -114,18 +114,16 @@ class DBManager:
             for select_peer in select_peer_list:
                 ticket_id = select_peer.get('ticket_id')
                 peer_id = select_peer.get('peer_id')
-                instance_id = select_peer.get('instance_id')
                 max_ticket_id = max(max_ticket_id, ticket_id)
                 peer = Peer()
                 peer.overlay_id = overlay_id
                 peer.expires = select_peer.get('expires')
                 peer.peer_id = peer_id
-                peer.instance_id = instance_id
                 peer.ticket_id = ticket_id
                 peer.update_time = datetime.now()
                 if select_peer.get('costmap') is not None:
                     peer.costmap = json.loads(select_peer.get('costmap'))
-                overlay.add_peer(peer_id, instance_id, peer)
+                overlay.add_peer(peer_id, peer)
 
             overlay.set_current_ticket_id(max_ticket_id)
             Factory.get().add_overlay(overlay_id, overlay)

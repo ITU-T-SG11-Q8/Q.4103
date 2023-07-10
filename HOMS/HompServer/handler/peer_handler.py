@@ -82,10 +82,10 @@ class HybridPeer(Resource):
 
             if overlay_peer.recovery:
                 select_peer = db_connector.select_one(query.SELECT_HP2P_PEER_PASSWORD, (
-                    overlay_peer.peer.peer_id, overlay_peer.peer.instance_id, overlay_peer.overlay_id, overlay_peer.peer.auth.password))
+                    overlay_peer.peer.peer_id, overlay_peer.overlay_id, overlay_peer.peer.auth.password))
                 if select_peer is None:
                     raise ValueError
-                if overlay_peer.ticket_id is None or current_overlay.has_peer(overlay_peer.peer.peer_id, overlay_peer.peer.instance_id) is None:
+                if overlay_peer.ticket_id is None or current_overlay.has_peer(overlay_peer.peer.peer_id) is None:
                     raise ValueError
                 pos = HOMS_CONFIG['RECOVERY_ENTRY_POINT_POS'] if 'RECOVERY_ENTRY_POINT_POS' in HOMS_CONFIG else 20
                 rank_pos = max(math.floor(activation_peer_count * (pos / 100)), 1)
@@ -110,24 +110,23 @@ class HybridPeer(Resource):
 
                 overlay_peer.ticket_id = current_overlay.get_current_ticket_id()
                 db_connector.insert(query.INSERT_HP2P_PEER,
-                                    (overlay_peer.peer.peer_id, overlay_peer.peer.instance_id, overlay_peer.overlay_id, overlay_peer.ticket_id,
+                                    (overlay_peer.peer.peer_id, overlay_peer.overlay_id, overlay_peer.ticket_id,
                                      overlay_peer.type, overlay_peer.sub_type, overlay_peer.expires,
                                      overlay_peer.peer.address, overlay_peer.peer.auth.password))
                 new_peer = Peer()
                 new_peer.overlay_id = overlay_peer.overlay_id
                 new_peer.expires = overlay_peer.expires
                 new_peer.peer_id = overlay_peer.peer.peer_id
-                new_peer.instance_id = overlay_peer.peer.instance_id
                 new_peer.ticket_id = overlay_peer.ticket_id
                 new_peer.update_time = datetime.now()
-                current_overlay.add_peer(new_peer.peer_id, new_peer.instance_id, new_peer)
+                current_overlay.add_peer(new_peer.peer_id, new_peer)
 
             if len(peer_info_list) < 1:
                 peer_info_list = db_connector.select(query.SELECT_TOP_PEER, (overlay_peer.overlay_id,))
 
             status_peer_info_list = []
             for peer_info in peer_info_list:
-                status_peer_info_list.append({'peer-id': peer_info.get('peer_id'), 'instance-id': peer_info.get('instance_id'), 'address': peer_info.get('address')})
+                status_peer_info_list.append({'peer-id': peer_info.get('peer_id'), 'address': peer_info.get('address')})
 
             #  app_data 사용 안함.
             # if overlay_peer.has_app_data:
@@ -135,13 +134,13 @@ class HybridPeer(Resource):
 
             if not overlay_peer.recovery:
                 Factory.get().get_web_socket_manager().send_add_peer_message(overlay_peer.overlay_id,
-                                                                             overlay_peer.peer.peer_id + ";" + str(overlay_peer.peer.instance_id),
+                                                                             overlay_peer.peer.peer_id,
                                                                              overlay_peer.ticket_id)
-                Factory.get().get_web_socket_manager().send_log_message(overlay_peer.overlay_id + ";" + str(overlay_peer.peer.instance_id),
+                Factory.get().get_web_socket_manager().send_log_message(overlay_peer.overlay_id,
                                                                         overlay_peer.peer.peer_id, 'Overlay Join.')
             else:
                 Factory.get().get_web_socket_manager().send_log_message(overlay_peer.overlay_id,
-                                                                        overlay_peer.peer.peer_id + ";" + str(overlay_peer.peer.instance_id), 'Overlay Recovery.')
+                                                                        overlay_peer.peer.peer_id, 'Overlay Recovery.')
 
             db_connector.commit()
             return overlay_peer.to_json(HompOverlayPeer.JOIN, status_peer_info_list), overlay_peer.status_code
@@ -163,7 +162,7 @@ class HybridPeer(Resource):
                 raise ValueError
 
             select_peer = db_connector.select_one(query.SELECT_HP2P_PEER_PASSWORD,
-                                                  (overlay_peer.peer.peer_id, overlay_peer.peer.instance_id,
+                                                  (overlay_peer.peer.peer_id,
                                                    overlay_peer.overlay_id, overlay_peer.peer.auth.password))
             if select_peer is None:
                 raise ValueError
@@ -171,7 +170,7 @@ class HybridPeer(Resource):
             current_overlay: Overlay = Factory.get().get_overlay(overlay_peer.overlay_id)
             if current_overlay is None:
                 raise ValueError
-            current_peer: Peer = current_overlay.get_peer(overlay_peer.peer.peer_id, overlay_peer.peer.instance_id)
+            current_peer: Peer = current_overlay.get_peer(overlay_peer.peer.peer_id)
             if current_peer is None:
                 raise ValueError
             current_peer.update_time = datetime.now()
@@ -191,7 +190,7 @@ class HybridPeer(Resource):
                     return overlay_peer.to_json(HompOverlayPeer.BASE), 407
 
             db_connector.update(query.UPDATE_HP2P_PEER,
-                                (overlay_peer.expires, overlay_peer.overlay_id, overlay_peer.peer.peer_id, overlay_peer.peer.instance_id))
+                                (overlay_peer.expires, overlay_peer.overlay_id, overlay_peer.peer.peer_id))
 
             # app_data 사용안함.
             # if overlay_peer.has_app_data:
@@ -223,21 +222,21 @@ class HybridPeer(Resource):
             if select_overlay is None:
                 raise ValueError
             select_peer = db_connector.select_one(query.SELECT_HP2P_PEER_PASSWORD,
-                                                  (overlay_peer.peer.peer_id, overlay_peer.peer.instance_id,
+                                                  (overlay_peer.peer.peer_id,
                                                    overlay_peer.overlay_id, overlay_peer.peer.auth.password))
             if select_peer is None:
                 raise ValueError
 
-            db_connector.delete(query.DELETE_HP2P_PEER, (overlay_peer.peer.peer_id, overlay_peer.peer.instance_id, overlay_peer.overlay_id))
+            db_connector.delete(query.DELETE_HP2P_PEER, (overlay_peer.peer.peer_id, overlay_peer.overlay_id))
 
             current_overlay: Overlay = Factory.get().get_overlay(overlay_peer.overlay_id)
             if current_overlay is None:
                 raise ValueError
-            current_peer: Peer = current_overlay.get_peer(overlay_peer.peer.peer_id, overlay_peer.peer.instance_id)
+            current_peer: Peer = current_overlay.get_peer(overlay_peer.peer.peer_id)
             if current_peer is None:
                 raise ValueError
 
-            current_overlay.delete_peer(overlay_peer.peer.peer_id, overlay_peer.peer.instance_id)
+            current_overlay.delete_peer(overlay_peer.peer.peer_id)
             Factory.get().get_web_socket_manager().send_log_message(overlay_peer.overlay_id, overlay_peer.peer.peer_id,
                                                                     'Overlay Leave.')
 
@@ -250,7 +249,7 @@ class HybridPeer(Resource):
                                                                         overlay_peer.peer.peer_id, 'Overlay Removal.')
             else:
                 Factory.get().get_web_socket_manager().send_delete_peer_message(overlay_peer.overlay_id,
-                                                                                overlay_peer.peer.peer_id + ";" + str(overlay_peer.peer.instance_id))
+                                                                                overlay_peer.peer.peer_id)
 
             db_connector.commit()
             return overlay_peer.to_json(HompOverlayPeer.BASE), 200
@@ -280,7 +279,7 @@ class HybridPeerReport(Resource):
                 raise ValueError
 
             select_peer = db_connector.select_one(query.SELECT_HP2P_PEER_PASSWORD,
-                                                  (overlay_peer.peer.peer_id, overlay_peer.peer.instance_id,
+                                                  (overlay_peer.peer.peer_id,
                                                    overlay_peer.overlay_id, overlay_peer.peer.auth.password))
             if select_peer is None:
                 raise ValueError
@@ -289,7 +288,7 @@ class HybridPeerReport(Resource):
             if current_overlay is None:
                 raise ValueError
 
-            current_peer: Peer = current_overlay.get_peer(overlay_peer.peer.peer_id, overlay_peer.peer.instance_id)
+            current_peer: Peer = current_overlay.get_peer(overlay_peer.peer.peer_id)
             if current_peer is None:
                 raise ValueError
 
@@ -300,13 +299,12 @@ class HybridPeerReport(Resource):
                 current_peer.costmap = overlay_peer.status.costmap
                 current_peer.update_time = datetime.now()
 
-                peerInstanceId = overlay_peer.peer.peer_id + ";" + str(overlay_peer.peer.instance_id)
-                Factory.get().get_web_socket_manager().send_update_peer_message(overlay_peer.overlay_id, peerInstanceId,
+                Factory.get().get_web_socket_manager().send_update_peer_message(overlay_peer.overlay_id, overlay_peer.peer.peer_id,
                                                                                 overlay_peer.status.costmap)
 
                 parameters = (overlay_peer.status.num_primary, overlay_peer.status.num_out_candidate,
                               overlay_peer.status.num_in_candidate, json.dumps(overlay_peer.status.costmap),
-                              overlay_peer.overlay_id, overlay_peer.peer.peer_id, overlay_peer.peer.instance_id)
+                              overlay_peer.overlay_id, overlay_peer.peer.peer_id)
                 db_connector.update(query.UPDATE_HP2P_PEER_COST_MAP, parameters)
 
             Factory.get().get_web_socket_manager().send_log_message(overlay_peer.overlay_id, overlay_peer.peer.peer_id,

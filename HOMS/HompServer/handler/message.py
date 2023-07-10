@@ -260,7 +260,6 @@ class HompOverlayPeer:
         if 'peer' in data:
             peer_data = data.get('peer')
             self.peer.peer_id = peer_data.get('peer-id')
-            self.peer.instance_id = peer_data.get('instance-id')
             self.peer.address = peer_data.get('address')
             if 'auth' in peer_data and 'password' in peer_data.get('auth'):
                 self.peer.auth.password = peer_data.get('auth').get('password')
@@ -302,8 +301,8 @@ class HompOverlayPeer:
         self.has_cr_policy = self.cr_policy.recovery_by is not None
 
     def valid_base(self):
-        return self.overlay_id is not None and self.peer.peer_id is not None and self.peer.instance_id is not None and \
-               self.peer.instance_id > 0 and self.peer.address is not None and self.peer.auth.password is not None
+        return self.overlay_id is not None and self.peer.peer_id is not None and \
+               self.peer.address is not None and self.peer.auth.password is not None
 
     def valid_status(self):
         return self.has_status and self.status.num_primary is not None and \
@@ -319,7 +318,7 @@ class HompOverlayPeer:
             return self.overlay_id is not None and self.valid_status()
         elif types == HompOverlayPeer.LEAVE:
             return self.overlay_id is not None and self.peer.peer_id is not None and \
-                    self.peer.instance_id is not None and self.peer.instance_id > 0 and self.peer.auth.password is not None
+                   self.peer.auth.password is not None
 
     def to_json(self, types, peer_info_list=None):
         if types == self.BASE:
@@ -349,7 +348,6 @@ class HompOverlayPeer:
             
             result_peer = {
                 'peer-id': self.peer.peer_id,
-                'instance-id': self.peer.instance_id,
                 'ticket-id': self.ticket_id,
                 'expires': self.expires
             }
@@ -365,7 +363,6 @@ class HompOverlayPeer:
                 },
                 'peer': {
                     'peer-id': self.peer.peer_id,
-                    'instance-id': self.peer.instance_id,
                     'expires': self.expires
                     # 'address': self.peer.address,
                     # 'auth': {
@@ -386,7 +383,6 @@ class HompPeerAuth:
 class HompPeer:
     def __init__(self):
         self.peer_id = None
-        self.instance_id = 0
         self.address = None
         self.auth = HompPeerAuth()
 

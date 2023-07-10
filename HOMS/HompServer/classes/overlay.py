@@ -32,19 +32,19 @@ class Overlay:
         self._peer_dic = {}
         self._current_ticket_id = 0
 
-    def has_peer(self, pid, iid):
-        return pid + str(iid) in self._peer_dic.keys()
+    def has_peer(self, pid):
+        return pid in self._peer_dic.keys()
 
-    def get_peer(self, pid, iid):
-        key = pid + str(iid)
+    def get_peer(self, pid):
+        key = pid
         return self._peer_dic[key] if key in self._peer_dic else None
 
-    def add_peer(self, pid, iid, peer):
-        key = pid + str(iid)
+    def add_peer(self, pid, peer):
+        key = pid
         self._peer_dic[key] = peer
 
-    def delete_peer(self, pid, iid):
-        key = pid + str(iid)
+    def delete_peer(self, pid):
+        key = pid
         del self._peer_dic[key]
 
     def get_peer_dict(self):
